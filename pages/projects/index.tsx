@@ -10,7 +10,9 @@ interface Project {
 }
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [ownedProjects, setOwnedProjects] = useState<Project[]>([]);
+  const [sharedProjects, setSharedProjects] = useState<Project[]>([]);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -18,7 +20,8 @@ export default function ProjectsPage() {
       const res = await fetch("/api/projects");
       if (res.ok) {
         const data = await res.json();
-        setProjects(data.projects);
+        console.log("projects",data);
+        setOwnedProjects(data.owned);
       } else if (res.status === 401) {
         router.push("/login");
       }
@@ -36,7 +39,7 @@ export default function ProjectsPage() {
     });
     if (res.ok) {
       const { project } = await res.json();
-      setProjects((prev) => [...(prev || []), project]);
+      setOwnedProjects((prev) => [...(prev || []), project]);
     }
   };
 
@@ -53,11 +56,11 @@ export default function ProjectsPage() {
       >
         + New Project
       </button>
-      {(projects || []).length  === 0 ? (
+      {(ownedProjects || []).length  === 0 ? (
         <p>No projects found.</p>
       ) : (
-        <ul className="space-y-2">
-          {projects.map((p) => (
+        <ul className="space-y-2 bg-red">
+          {ownedProjects.map((p) => (
             <li
               key={p.id}
               onClick={() => openProject(p.id)}

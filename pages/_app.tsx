@@ -1,6 +1,7 @@
 // pages/_app.tsx
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
+import "../src/app/globals.css"
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {

@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets   = ["native", "windows"] 
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -9,42 +9,43 @@ datasource db {
 }
 
 model User {
-  id                 String           @id @default(cuid())
+  id                 String          @id @default(cuid())
   username           String
-  normalizedUsername String           @unique
-  createdAt          DateTime         @default(now())
-  ownedProjects Project[]        @relation("OwnedProjects")
-  memberships    ProjectMember[]
+  normalizedUsername String          @unique
+  createdAt          DateTime        @default(now())
+  ownedProjects      Project[]       @relation("OwnedProjects")
+  memberships        ProjectMember[]
 }
 
 model Project {
-  id          String           @id @default(cuid())
+  id          String          @id @default(cuid())
   name        String
   description String?
   ownerId     String
-  owner       User             @relation("OwnedProjects", fields: [ownerId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  owner       User            @relation("OwnedProjects", fields: [ownerId], references: [id])
   members     ProjectMember[]
-  whiteboards  Whiteboard[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  whiteboards Whiteboard[]
 }
 
 model ProjectMember {
-  id        String   @id @default(cuid())
-  project   Project  @relation(fields: [projectId], references: [id])
+  id        String  @id @default(cuid())
   projectId String
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  role      String   @default("member") // owner is tracked on Project.ownerId
+  role      String  @default("member")
+  project   Project @relation(fields: [projectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
   @@unique([projectId, userId])
 }
 
 model Whiteboard {
   id        String   @id @default(cuid())
-  project   Project  @relation(fields: [projectId], references: [id])
   projectId String
   name      String
   data      Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id])
 }
