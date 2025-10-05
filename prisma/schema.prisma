@@ -1,6 +1,5 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "windows"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,44 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                 String          @id @default(cuid())
-  username           String
-  normalizedUsername String          @unique
-  createdAt          DateTime        @default(now())
-  ownedProjects      Project[]       @relation("OwnedProjects")
-  memberships        ProjectMember[]
-}
-
 model Project {
   id          String          @id @default(cuid())
   name        String
   description String?
-  ownerId     String
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  owner       User            @relation("OwnedProjects", fields: [ownerId], references: [id])
+  ownerId     String
+  owner       User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members     ProjectMember[]
   whiteboards Whiteboard[]
+
+  @@map("projects")
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  username           String   @unique
+  normalizedUsername String?  @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  ownedProjects Project[]       @relation("ProjectOwner")
+  memberships   ProjectMember[]
+
+  @@map("users")
 }
 
 model ProjectMember {
-  id        String  @id @default(cuid())
-  projectId String
+  id        String   @id @default(cuid())
   userId    String
-  role      String  @default("member")
-  project   Project @relation(fields: [projectId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
+  projectId String
+  role      String   @default("member")
+  joinedAt  DateTime @default(now())
 
-  @@unique([projectId, userId])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@map("project_members")
 }
 
 model Whiteboard {
   id        String   @id @default(cuid())
-  projectId String
   name      String
-  data      Json
+  content   String   @default("{}")
+  projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  project   Project  @relation(fields: [projectId], references: [id])
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("whiteboards")
 }

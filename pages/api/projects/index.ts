@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!sessionUser) return res.status(401).json({ error: "not authenticated" });
 
   if (req.method === "GET") {
-    const userId = sessionUser.id;
+    const userId = sessionUser.id; 
 
     const owned = await prisma.project.findMany({
       where: { ownerId: userId },
@@ -27,11 +27,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "POST") {
     const { name, description } = req.body;
-    if (!name) return res.status(400).json({ error: "name required" });
+  
+      if (!name) return res.status(400).json({ error: "name required" });
 
-    const project = await prisma.project.create({
-      data: { name, description, ownerId: sessionUser.id },
-    });
+  // Verify the user exists
+  const userExists = await prisma.user.findUnique({
+    where: { id: sessionUser.id }
+  });
+
+  if (!userExists) {
+    return res.status(400).json({ error: "Invalid user" });
+  }
+
+  const project = await prisma.project.create({
+    data: { name, description, ownerId: sessionUser.id },
+  });
 
     await prisma.projectMember.create({
       data: { projectId: project.id, userId: sessionUser.id },
