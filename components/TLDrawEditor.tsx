@@ -2,7 +2,7 @@
 'use client'
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Tldraw, createTLStore, defaultShapeUtils, TLStore } from "tldraw";
+import { Tldraw, createTLStore, defaultShapeUtils } from "tldraw";
 import "tldraw/tldraw.css";
 
 interface Whiteboard {
@@ -13,7 +13,7 @@ interface Whiteboard {
 
 export default function TLDrawEditor() {
   const [whiteboard, setWhiteboard] = useState<Whiteboard | null>(null);
-  const [store, setStore] = useState<TLStore | null>(null);
+  const [store, setStore] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   
   const router = useRouter();
@@ -29,21 +29,11 @@ export default function TLDrawEditor() {
         setWhiteboard(data.whiteboard);
         
         // Initialize store with saved content
-        const newStore = createTLStore({ shapeUtils: defaultShapeUtils });
-        
+        const store = createTLStore({ shapeUtils: defaultShapeUtils });
         if (data.whiteboard.content) {
-          try {
-            const snapshot = JSON.parse(data.whiteboard.content);
-            // Use mergeRemoteChanges instead of loadSnapshot
-            newStore.mergeRemoteChanges(() => {
-              newStore.put(Object.values(snapshot.store));
-            });
-          } catch (error) {
-            console.error('Error loading whiteboard content:', error);
-          }
+          store.loadStoreSnapshot(JSON.parse(data.whiteboard.content));
         }
-        
-        setStore(newStore);
+        setStore(store);
       }
     };
 
@@ -59,7 +49,7 @@ export default function TLDrawEditor() {
     await fetch(`/api/projects/${projectId}/whiteboards/${whiteboardId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: JSON.stringify(snapshot) }),
+      body: JSON.stringify({ content: snapshot }),
     });
     
     setIsSaving(false);
