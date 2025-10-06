@@ -2,23 +2,8 @@
 
 A full-stack application built with Next.js and Supabase, enabling users to create projects, manage whiteboards, and collaborate in real-time using the TLDraw library. This project demonstrates a complete development cycle from database design to deployment.
 
----
 
-## Live Demo
-
-You can view a live deployment of the application here:
-
-- **[Live App Link](https://tldraw-app-kappa.vercel.app/projects)**
-
- **User Credentials:**
- you can create your own user by logging in or just use the name "sarthak tiwari" for testing all the functionalities of the application.
-
-> **Production Limitations:**
-> The live demo uses TLDraw's free plan, which has certain restrictions for production applications. As a result, some real-time collaboration features may be limited. For the full experience and complete functionality, it is **highly recommended** to run the project locally.
-
----
-
-## Key Features
+## ✨ Key Features
 
 - **User Authentication:** Secure user sign-up and login functionality.
 - **Project Management:** Full CRUD (Create, Read, Update, Delete) operations for projects.
@@ -29,7 +14,7 @@ You can view a live deployment of the application here:
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Frontend:** [Next.js](https://nextjs.org/) (React Framework)
 - **Backend:** [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)
