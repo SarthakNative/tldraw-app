@@ -1,37 +1,51 @@
-Collaborative Whiteboard Project
-A real-time collaborative whiteboard application designed for teams. Built with a modern tech stack including Next.js, Supabase, and TLDraw, this project allows users to create projects, manage members, and collaborate on shared digital whiteboards.
+# Collaborative Whiteboard Application
 
-Table of Contents
-Project Overview
-Key Features
-Tech Stack
-Database Schema
-Local Setup Instructions
-Deployment
-Testing Guide
-Project Overview
-This application provides a seamless and interactive environment for real-time collaboration. The core functionality revolves around "Projects," which act as containers for shared "Whiteboards." Users can sign up, create their own projects, and invite others to collaborate. The integration with TLDraw provides a feature-rich and performant whiteboarding experience.
+A full-stack application built with Next.js and Supabase, enabling users to create projects, manage whiteboards, and collaborate in real-time using the TLDraw library. This project demonstrates a complete development cycle from database design to deployment.
 
-The backend is powered by Supabase for its database and authentication services, with Prisma acting as the ORM for type-safe database access. The entire application is built with Next.js, leveraging its capabilities for both frontend rendering and backend API routes. The UI is crafted with Tailwind CSS for a clean, modern, and responsive design.
+---
 
-Key Features
-User Authentication: Secure user sign-up and login managed by Supabase Auth.
-Project Management: Full CRUD (Create, Read, Update, Delete) functionality for projects.
-Collaborative Workspaces: Invite users to projects to view and edit shared whiteboards.
-Real-time Whiteboards: Create multiple whiteboards within each project, powered by the fast and flexible TLDraw library.
-Type-Safe Codebase: Built entirely with TypeScript for robust and maintainable code.
-Tech Stack
-Framework: Next.js
-Styling: Tailwind CSS
-Whiteboard Library: TLDraw
-Backend-as-a-Service: Supabase (PostgreSQL Database, Auth)
-ORM: Prisma
-Language: TypeScript
-Database Schema
-The database is managed using a PostgreSQL instance on Supabase and modeled with the Prisma schema below.
+## 🚀 Live Demo
 
-Prisma Schema
-prisma
+You can view a live deployment of the application here:
+
+- **[https://tldraw-app.vercel.app/projects](https://tldraw-app.vercel.app/projects)**
+
+> **⚠️ Production Limitations:**
+> The live demo uses TLDraw's free plan, which has certain restrictions for production applications. As a result, some real-time collaboration features may be limited. For the full experience and complete functionality, it is **highly recommended** to run the project locally.
+
+---
+
+## ✨ Key Features
+
+- **User Authentication:** Secure user sign-up and login functionality.
+- **Project Management:** Full CRUD (Create, Read, Update, Delete) operations for projects.
+- **Whiteboard Management:** Create and manage multiple whiteboards within each project.
+- **Collaborative Drawing:** Real-time whiteboarding powered by the TLDraw library.
+- **Project Sharing:** Invite other users to collaborate on your projects.
+- **Role-Based Access:** Simple member role implementation within projects.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** [Next.js](https://nextjs.org/) (React Framework)
+- **Backend:** [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
+- **BaaS / Hosting:** [Supabase](https://supabase.io/)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Whiteboard Library:** [TLDraw](https://tldraw.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+
+---
+
+## 🗃️ Database Schema
+
+The database is structured using Prisma to manage users, projects, members, and whiteboards.
+
+<details>
+<summary>Click to view Prisma Schema</summary>
+
+```prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -42,13 +56,13 @@ datasource db {
 }
 
 model Project {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   name        String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   ownerId     String
-  owner       User     @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  owner       User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members     ProjectMember[]
   whiteboards Whiteboard[]
 
@@ -72,7 +86,7 @@ model ProjectMember {
   id        String   @id @default(cuid())
   userId    String
   projectId String
-  role      String   @default("member")
+  role      String   @default("member") // e.g., "admin", "member"
   joinedAt  DateTime @default(now())
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -85,108 +99,100 @@ model ProjectMember {
 model Whiteboard {
   id        String   @id @default(cuid())
   name      String
-  content   String   @default("{}") // Stores TLDraw snapshot as a JSON string
+  content   String   @default("{}")
   projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  data      Json?
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@map("whiteboards")
 }
-Table Relationships
-User & Project (One-to-Many): A User can own multiple Projects.
-Project & Whiteboard (One-to-Many): A Project can contain multiple Whiteboards.
-User & Project (Many-to-Many): A User can be a member of multiple Projects, and a Project can have multiple Users as members. This relationship is managed through the ProjectMember join table.
-Local Setup Instructions
-Follow these steps to get the project running on your local machine.
+```
+<details>
 
-1. Prerequisites
+## 🏁 Getting Started
+Follow these instructions to set up and run the project on your local machine.
+
+**Prerequisites**
 Node.js (v18 or later)
 npm or yarn
 Git
-A Supabase account
-2. Installation
-Clone the repository and install the project dependencies.
+A free Supabase account to host your PostgreSQL database.
+
+**Installation & Setup**
+Clone the repository:
 
 bash
-# Clone the repository
-git clone https://github.com/your-username/your-repo-name.git
+```
+git clone https://github.com/SarthakNative/tldraw-app.git
+Navigate to the project directory:
+```
+bash
+```
+cd tldraw-app
+```
 
-# Navigate into the project directory
-cd your-repo-name
+Install dependencies:
 
-# Install dependencies
+bash
+```
 npm install
-# or
-yarn install
-3. Environment Setup
-You will need to connect the project to your own Supabase instance.
+```
 
-Create a Supabase Project: Go to your Supabase dashboard and create a new project.
+Set up environment variables:
 
-Get Database URL: Navigate to Project Settings > Database. Under Connection string, copy the URI that starts with postgresql://.
+Create a .env.local file by copying the example file:
 
-Get API Keys: Navigate to Project Settings > API. Copy the Project URL and the anon public key.
-
-Create .env.local file: In the root of your project, create a new file named .env.local and add the following variables, replacing the placeholders with your Supabase credentials.
+bash
+```cp .env.example .env.local
+```
+Open .env.local and fill in the required values:
 
 env
-# Found in Project Settings > Database > Connection string
-DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@[YOUR-DB-HOST]:5432/postgres"
+# Get this from your Supabase project -> Project Settings -> Database -> Connection string
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@[HOST]:5432/postgres"
 
-# Found in Project Settings > API
-NEXT_PUBLIC_SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_PUBLIC_KEY"
-4. Database Migration
-Apply the Prisma schema to your Supabase database. This will create the tables defined in schema.prisma.
+# A strong, random string for signing authentication tokens.
+# You can generate one here: https://www.lastpass.com/features/password-generator
+JWT_SECRET="YOUR_SUPER_SECRET_JWT_KEY"
+Sync the database schema:
 
+This command generates the Prisma Client based on your schema.
 bash
-npx prisma migrate dev
-5. Start the Server
-Run the development server.
+npx prisma generate
+This command pushes your schema changes to the database, creating the tables.
+bash
+npx prisma db push
+Run the development server:
 
 bash
 npm run dev
-The application should now be running at http://localhost:3000.
+Open the application:
+Visit http://localhost:3000 in your browser.
 
-Deployment
-Live URL: https://your-live-app-url.com (Replace with your deployment URL)
+## 🧪 How to Test
+Follow this user flow to test all core functionalities of the application:
 
-Deployment Notes
-This Next.js application is optimized for deployment on platforms like Vercel or Netlify.
+1. Authentication: Navigate to the root URL. You will be redirected to the login page. Create a new user account and log in.
+2. Project Dashboard: After logging in, you will land on the /projects dashboard.
+3. Project CRUD:
+4. Create a new project.
+5. Edit its name and description.
+6. Delete a project to confirm functionality.
+7. Whiteboard CRUD:
+8. Click on a project to open it.
+9. Inside a project, create one or more whiteboards.
+10. Perform update and delete operations on the whiteboards.
 
-Environment Variables: When deploying, ensure you add the same environment variables from your .env.local file to your hosting provider's environment variable settings.
-Build Command: The standard build command is npm run build.
-Database: Your Supabase database is already hosted and does not require separate deployment.
-Testing Guide
-Follow these steps to test the core functionalities of the application.
+11. Drawing:
+Open a whiteboard.
+Use the drawing tools to create content on the canvas. Your changes should save automatically.
+Collaboration:
+Use the "Share" feature within a project to invite another registered user.
+Log out of your current account.
+Log in as the invited user. You should now see the shared project on their dashboard.
 
-1. Authentication and Routing
-Navigate to the root URL (/).
-If you are not logged in, you should be automatically redirected to the /login page.
-Create a new account or log in with an existing one.
-Upon successful login, you should be redirected to the main dashboard at /projects.
-Locate and click the "Logout" button. You should be logged out and redirected back to the login page.
-2. Project CRUD Operations
-On the /projects dashboard, find the section for "Owned Projects".
-Create: Click the "New Project" button, fill in a name and description, and submit. The new project should appear in your list.
-Update: Find the project you just created and use the edit functionality to change its name or description. Verify the changes are saved.
-Delete: Use the delete functionality to remove the project. Confirm that it is no longer visible on your dashboard.
-3. Whiteboard CRUD Operations
-Create a project or click on an existing one to navigate to its whiteboards page (/projects/[projectId]/whiteboards).
-Create: Click the "New Whiteboard" button, give it a name, and submit. The whiteboard should appear in the list.
-Update: Rename the whiteboard and confirm the new name is displayed.
-Delete: Delete the whiteboard and confirm it's removed from the list.
-4. Whiteboard Drawing Functionality
-Click to open a whiteboard.
-Use the drawing tools provided by TLDraw to create shapes, lines, and text.
-Refresh the page. Your drawings should persist and be reloaded correctly.
-5. Project Sharing and Collaboration
-Create two separate user accounts for this test.
-Log in as User A. Create a new project.
-Find the "Share" or "Invite" feature for that project and share it with User B's email/username.
-Log out as User A.
-Log in as User B.
-Navigate to the /projects dashboard and check the "Shared Projects" (or equivalent) section. The project shared by User A should be visible.
-Click on the shared project to access its whiteboards and verify that you can view and edit them.
+## 👤 Author
+Sarthak
+GitHub: @SarthakNative
