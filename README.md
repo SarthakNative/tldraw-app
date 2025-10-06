@@ -8,7 +8,10 @@ A full-stack application built with Next.js and Supabase, enabling users to crea
 
 You can view a live deployment of the application here:
 
-- **[https://tldraw-app.vercel.app/projects](https://tldraw-app.vercel.app/projects)**
+- **[Live App Link](https://tldraw-9nxkwybeu-sarthaknatives-projects.vercel.app/projects)**
+
+ **User Credentials:**
+ you can create your own user by logging in or just use the name "sarthak tiwari" for testing all the functionalities of the application.
 
 > **⚠️ Production Limitations:**
 > The live demo uses TLDraw's free plan, which has certain restrictions for production applications. As a result, some real-time collaboration features may be limited. For the full experience and complete functionality, it is **highly recommended** to run the project locally.
@@ -42,8 +45,7 @@ You can view a live deployment of the application here:
 
 The database is structured using Prisma to manage users, projects, members, and whiteboards.
 
-<details>
-<summary>Click to view Prisma Schema</summary>
+
 
 ```prisma
 generator client {
@@ -109,7 +111,7 @@ model Whiteboard {
   @@map("whiteboards")
 }
 ```
-<details>
+
 
 ## 🏁 Getting Started
 Follow these instructions to set up and run the project on your local machine.
@@ -126,8 +128,9 @@ Clone the repository:
 bash
 ```
 git clone https://github.com/SarthakNative/tldraw-app.git
-Navigate to the project directory:
 ```
+Navigate to the project directory:
+
 bash
 ```
 cd tldraw-app
@@ -145,16 +148,17 @@ Set up environment variables:
 Create a .env.local file by copying the example file:
 
 bash
-```cp .env.example .env.local
 ```
+cp .env.example .env.local
+```
+
 Open .env.local and fill in the required values:
 
-env
-# Get this from your Supabase project -> Project Settings -> Database -> Connection string
+### Get this from your Supabase project -> Project Settings -> Database -> Connection string
 DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@[HOST]:5432/postgres"
 
-# A strong, random string for signing authentication tokens.
-# You can generate one here: https://www.lastpass.com/features/password-generator
+### A strong, random string for signing authentication tokens.
+### You can generate one here: https://www.lastpass.com/features/password-generator
 JWT_SECRET="YOUR_SUPER_SECRET_JWT_KEY"
 Sync the database schema:
 
