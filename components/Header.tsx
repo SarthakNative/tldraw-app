@@ -55,7 +55,6 @@ const Header: React.FC = () => {
   return (
     <header className="bg-gradient-to-r from-gray-900 to-slate-800 text-white px-6 py-4 shadow-xl border-b border-gray-700">
       <div className="max-w-8xl mx-auto flex items-center justify-between">
-        {/* Logo/Brand */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
