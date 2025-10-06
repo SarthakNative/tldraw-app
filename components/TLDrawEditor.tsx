@@ -1,4 +1,3 @@
-// components/TLDrawEditor.tsx
 'use client'
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -28,7 +27,6 @@ export default function TLDrawEditor() {
         const data = await res.json();
         setWhiteboard(data.whiteboard);
         
-        // Initialize store with saved content
         const store = createTLStore({ shapeUtils: defaultShapeUtils });
         if (data.whiteboard.content) {
           store.loadStoreSnapshot(JSON.parse(data.whiteboard.content));

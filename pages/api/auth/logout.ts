@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import * as cookie from "cookie";
 
 export default function logoutRoute(req: NextApiRequest, res: NextApiResponse) {
-  // Clear the cookie
   res.setHeader(
     "Set-Cookie",
     cookie.serialize("proj_session", "", {

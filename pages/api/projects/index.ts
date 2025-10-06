@@ -30,7 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
       if (!name) return res.status(400).json({ error: "name required" });
 
-  // Verify the user exists
   const userExists = await prisma.user.findUnique({
     where: { id: sessionUser.id }
   });

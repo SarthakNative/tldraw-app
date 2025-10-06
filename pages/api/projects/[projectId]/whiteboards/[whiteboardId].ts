@@ -1,4 +1,3 @@
-// pages/api/projects/[projectId]/whiteboards/[whiteboardId]/index.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../../lib/prisma";
 import { getUserFromRequest } from "../../../../../lib/auth";

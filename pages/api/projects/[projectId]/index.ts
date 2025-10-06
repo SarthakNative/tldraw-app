@@ -1,4 +1,3 @@
-// pages/api/projects/[projectId]/index.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../lib/prisma";
 import { getUserFromRequest } from "../../../../lib/auth";
@@ -54,7 +53,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             { members: { 
               some: { 
                 userId: sessionUser.id,
-                // Optionally add role-based permissions here if needed
               }
             }}
           ]

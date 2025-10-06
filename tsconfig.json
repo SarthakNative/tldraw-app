@@ -8,7 +8,6 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    // CRITICAL FIX: Changing from "bundler" to "node" to correctly resolve 'iron-session/next' sub-path exports.
     "types":["node"],
     "moduleResolution": "node", 
     "resolveJsonModule": true,

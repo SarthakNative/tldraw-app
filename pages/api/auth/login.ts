@@ -24,14 +24,12 @@ export default async function loginRoute(req: NextApiRequest, res: NextApiRespon
     });
   }
 
-  // Sign a JWT token
   const token = jwt.sign(
     { id: user.id, username: user.username },
     JWT_SECRET,
     { expiresIn: "7d" }
   );
 
-  // Send it as an HTTP‑only cookie
   res.setHeader(
     "Set-Cookie",
     cookie.serialize("proj_session", token, {

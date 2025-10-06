@@ -1,4 +1,3 @@
-// pages/api/projects/[projectId]/share.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../lib/prisma";
 import { getUserFromRequest } from "../../../../lib/auth";
