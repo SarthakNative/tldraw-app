@@ -55,7 +55,7 @@ model Whiteboard {
   projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  data      Json?
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@map("whiteboards")
