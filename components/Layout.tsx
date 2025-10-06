@@ -1,10 +1,13 @@
 import React from "react";
-import Header from "./Header"; // assuming you want a header component
+import Header from "./Header"; 
+import { usePathname } from "next/navigation";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+    const pathname = usePathname();
+    const isLoginPage = pathname === "/login";
   return (
     <>
-      <Header />
+      {!isLoginPage && <Header />}
       <main>{children}</main>
     </>
   );
