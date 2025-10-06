@@ -4,7 +4,7 @@ A full-stack application built with Next.js and Supabase, enabling users to crea
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 You can view a live deployment of the application here:
 
@@ -13,12 +13,12 @@ You can view a live deployment of the application here:
  **User Credentials:**
  you can create your own user by logging in or just use the name "sarthak tiwari" for testing all the functionalities of the application.
 
-> **⚠️ Production Limitations:**
+> **Production Limitations:**
 > The live demo uses TLDraw's free plan, which has certain restrictions for production applications. As a result, some real-time collaboration features may be limited. For the full experience and complete functionality, it is **highly recommended** to run the project locally.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **User Authentication:** Secure user sign-up and login functionality.
 - **Project Management:** Full CRUD (Create, Read, Update, Delete) operations for projects.
@@ -29,7 +29,7 @@ You can view a live deployment of the application here:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend:** [Next.js](https://nextjs.org/) (React Framework)
 - **Backend:** [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)
@@ -41,7 +41,7 @@ You can view a live deployment of the application here:
 
 ---
 
-## 🗃️ Database Schema
+## Database Schema
 
 The database is structured using Prisma to manage users, projects, members, and whiteboards.
 
@@ -122,7 +122,7 @@ npm or yarn
 Git
 A free Supabase account to host your PostgreSQL database.
 
-**Installation & Setup**
+## Installation & Setup
 Clone the repository:
 
 bash
@@ -164,18 +164,27 @@ Sync the database schema:
 
 This command generates the Prisma Client based on your schema.
 bash
+```
 npx prisma generate
+```
 This command pushes your schema changes to the database, creating the tables.
 bash
+```
 npx prisma db push
+```
 Run the development server:
 
 bash
+```
 npm run dev
+```
 Open the application:
 Visit http://localhost:3000 in your browser.
 
-## 🧪 How to Test
+## Deployment
+if ne wants to deploy the application, they can just import project into vercel from github, **remember, for serverless, you should be connecting to port 6543, the connection pooler port. You can find the URL in your project only, after clicking the connection button**
+
+## How to Test
 Follow this user flow to test all core functionalities of the application:
 
 1. Authentication: Navigate to the root URL. You will be redirected to the login page. Create a new user account and log in.
@@ -197,6 +206,6 @@ Use the "Share" feature within a project to invite another registered user.
 Log out of your current account.
 Log in as the invited user. You should now see the shared project on their dashboard.
 
-## 👤 Author
+## Author
 Sarthak
 GitHub: @SarthakNative
