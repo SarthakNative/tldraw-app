@@ -144,7 +144,7 @@ export default function ProjectsPage() {
                   <h3 className="font-medium text-lg mb-2">{project.name}</h3>
                   <p className="text-sm text-gray-600 mb-2">{project.description}</p>
                   <p className="text-xs text-gray-500">
-                    Members: {project.members.length}
+                    Members: {project?.members?.length}
                   </p>
                 </div>
                 

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
+import * as cookie from "cookie";
 
 export default function logoutRoute(req: NextApiRequest, res: NextApiResponse) {
   // Clear the cookie
