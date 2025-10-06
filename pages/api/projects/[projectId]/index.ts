@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           { members: { some: { userId: sessionUser.id } } }
         ]
       },
-      include: { owner: true }
+      include: { owner: true, members: true }
     });
 
     if (!project) return res.status(403).json({ error: "Access denied" });
@@ -34,6 +34,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       whiteboards,
       isOwner: project.ownerId === sessionUser.id
     });
+  }
+
+  if (req.method === "PUT") {
+    // Handle project update
+    const { name, description } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Name is required" });
+    }
+
+    try {
+      // Check if project exists and user has permission to edit
+      const project = await prisma.project.findFirst({
+        where: {
+          id: projectId as string,
+          OR: [
+            { ownerId: sessionUser.id }, // Owner can edit
+            { members: { 
+              some: { 
+                userId: sessionUser.id,
+                // Optionally add role-based permissions here if needed
+              }
+            }}
+          ]
+        }
+      });
+
+      if (!project) {
+        return res.status(404).json({ error: "Project not found or access denied" });
+      }
+
+      // Update the project
+      const updatedProject = await prisma.project.update({
+        where: { id: projectId as string },
+        data: { 
+          name: name.trim(), 
+          description: description?.trim() || "" 
+        },
+        include: { owner: true, members: true }
+      });
+
+      return res.json({ project: updatedProject });
+    } catch (error) {
+      console.error("Failed to update project:", error);
+      return res.status(500).json({ error: "Failed to update project" });
+    }
   }
 
   if (req.method === "DELETE") {
@@ -53,5 +99,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ message: "Project deleted successfully" });
   }
 
-  return res.status(405).end();
+  res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+  return res.status(405).end(`Method ${req.method} Not Allowed`);
 }
