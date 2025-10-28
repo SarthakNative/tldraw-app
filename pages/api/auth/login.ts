@@ -5,36 +5,6 @@ import * as cookie from "cookie";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-// Retry utility function
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries: number = 3
-): Promise<T> {
-  let lastError: Error;
-  
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      lastError = error;
-      
-      // Retry on connection-related errors
-      if (error.code && ['P1001', 'P1017', 'P2028', 'P2034'].includes(error.code)) {
-        if (attempt < maxRetries - 1) {
-          const delay = Math.pow(2, attempt) * 1000;
-          console.log(`Database operation failed (attempt ${attempt + 1}), retrying in ${delay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          continue;
-        }
-      }
-      
-      break;
-    }
-  }
-  
-  throw lastError!;
-}
-
 export default async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).end();
 
@@ -46,20 +16,20 @@ export default async function loginRoute(req: NextApiRequest, res: NextApiRespon
   const trimmedUsername = username.trim();
 
   try {
-    // Use upsert to handle both find and create in one atomic operation
-    const user = await withRetry(async () => {
-      return await prisma.user.upsert({
-        where: { normalizedUsername: normalized },
-        update: {
-          // Update last login time if you have that field
-          // lastLoginAt: new Date()
-        },
-        create: { 
+    // Try to find user first
+    let user = await prisma.user.findUnique({
+      where: { normalizedUsername: normalized },
+    });
+
+    // If user doesn't exist, create them
+    if (!user) {
+      user = await prisma.user.create({
+        data: { 
           username: trimmedUsername, 
           normalizedUsername: normalized 
         },
       });
-    });
+    }
 
     const token = jwt.sign(
       { id: user.id, username: user.username },
@@ -83,17 +53,10 @@ export default async function loginRoute(req: NextApiRequest, res: NextApiRespon
   } catch (error: any) {
     console.error("Login route error:", error);
     
-    // Handle specific Prisma errors
-    if (error.code === 'P1001') {
+    if (error.message?.includes('prepared statement') || error.code === '42P05') {
       return res.status(503).json({ 
-        error: "Service temporarily unavailable. Please try again.",
+        error: "Service temporarily unavailable. Please refresh and try again.",
         retry: true 
-      });
-    }
-    
-    if (error.code === 'P2002') {
-      return res.status(409).json({ 
-        error: "User already exists with different credentials." 
       });
     }
 
